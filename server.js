@@ -4,22 +4,22 @@ import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
 dotenv.config();
-const app = express();
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-// -------------------------------
-// SUPABASE CONNECTION
-// -------------------------------
+// -----------------------------
+// CONNECT SUPABASE
+// -----------------------------
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY  // server-side key
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// -------------------------------
-// 1️⃣ Save Message to Database
-// -------------------------------
+// -----------------------------
+// API: Save Message
+// -----------------------------
 app.post("/message", async (req, res) => {
   const { name, message } = req.body;
 
@@ -31,9 +31,9 @@ app.post("/message", async (req, res) => {
   res.json({ success: true, data });
 });
 
-// -------------------------------
-// 2️⃣ Get All Messages
-// -------------------------------
+// -----------------------------
+// API: Get Messages
+// -----------------------------
 app.get("/messages", async (req, res) => {
   const { data, error } = await supabase
     .from("messages")
@@ -44,5 +44,12 @@ app.get("/messages", async (req, res) => {
   res.json(data);
 });
 
+// --------------------------------
+// Static Frontend Serve
+// --------------------------------
+app.use(express.static("public"));
+
 // -------------------------------
-app.listen(3000, () => console.log("Server running on port 3000"));
+app.listen(3000, () => {
+  console.log("Backend running on port 3000");
+});
